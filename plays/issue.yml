@@ -1,0 +1,34 @@
+---
+- name: Modify the file content
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Modify the content in proxy host group
+      ansible.builtin.copy:
+        content: 'Proxy'
+        dest: /etc/issue
+      when: inventory_hostname in groups['proxy']    
+
+    - name: Modify the content in test host group
+      ansible.builtin.copy:
+        content: 'Test'
+        dest: /etc/issue
+      when: inventory_hostname in groups['test']
+
+    - name: Modify the content in database host group
+      ansible.builtin.copy:
+        content: 'Database'
+        dest: /etc/issue
+      when: inventory_hostname in groups['database']
+
+    - name: Modify the content in webservers host group
+      ansible.builtin.copy:
+        content: 'Webservers'
+        dest: /etc/issue
+      when: inventory_hostname in groups['webservers']
+
+
+     
+    
+

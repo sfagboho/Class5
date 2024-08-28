@@ -1,0 +1,60 @@
+---
+- name: Download file
+  hosts: ansible-control.hl.local
+  gather_facts: false
+
+  tasks:
+    - name: Download from url the user_list.yml
+      ansible.builtin.get_url:
+        url: http://rhgls.labx.example.com/materials/ 
+        dest: /home/automation/plays/user_list.yml
+      ignore_errors: true
+
+- name: Create the users and groups
+  hosts: all
+  become: true
+  vars_files:
+    - /home/automation/plays/locker.yml
+    - /home/automation/plays/user_list.yml
+  
+  tasks:
+    - name: Create devops group in database and test hosts groups
+      ansible.builtin.group:
+        name: devops 
+        state: present
+      when: inventory_hostname in groups['database'] or inventory_hostname in groups['test'] 
+
+    - name: Create opsmgr group in proxy and prod hosts groups
+      ansible.builtin.group:
+        name: opsmgr
+        state: present
+      when: inventory_hostname in groups['proxy'] or inventory_hostname in groups['prod']
+
+    - name: Create the users with job description developer in database and test hosts groups
+      ansible.builtin.user:
+        name: "{{ item.username }}"
+        groups: devops
+        append: true
+        password: "{{ pw_developer | password_hash('sha512') }}"
+        update_password: on_create 
+      loop: "{{ users }}"
+      when: 
+        - "item.Job  == 'developer'"
+        - inventory_hostname in groups['database'] or inventory_hostname in groups['test']  
+
+    - name: Create the users with job description manager in proxy and prod hosts groups
+      ansible.builtin.user:
+        name: "{{ item.username }}"
+        groups: opsmgr
+        append: true
+        password: "{{ pw_manager | password_hash('sha512') }}"
+        update_password: on_create
+      loop: "{{ users }}"
+      when:
+        - "item.Job  == 'manager'"
+        - inventory_hostname in groups['proxy'] or inventory_hostname in groups['prod']
+
+
+
+
+

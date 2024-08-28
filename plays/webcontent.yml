@@ -1,0 +1,46 @@
+---
+- name: Create a web content directory
+  hosts: webservers
+  become: true
+
+  tasks:
+    - name: Create the webdev group
+      ansible.builtin.group:
+        name: webdev
+        state: present
+
+    - name: Create the webdev directory with permission
+      ansible.builtin.file:
+        path: /webdev
+        group: webdev
+        mode: '2775'
+        recurse: true
+        state: directory
+
+    - name: Create the symlink 
+      ansible.builtin.file:
+        src: /webdev
+        dest: /var/www/html/webdev
+        group: webdev
+        mode: '2775'
+        state: link
+        force: true
+
+    - name: Create the file /webdev/index.html 
+      ansible.builtin.copy:
+        content: "development\n"
+        dest: /webdev/index.html
+
+    - name: Configure the fcontext for /webdev
+      community.general.sefcontext:
+        target: '/webdev(/.*)?'
+        setype: httpd_sys_content_t
+        state: present
+      notify: restorecon /webdev
+
+  handlers:
+    - name: restorecon /webdev
+      ansible.builtin.command: restorecon -FRv /webdev   
+      
+ 
+      

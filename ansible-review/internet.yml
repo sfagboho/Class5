@@ -1,0 +1,61 @@
+---
+- name: Install and configure the apache httpd
+  hosts: node2
+  become: true
+
+  tasks:
+    - name: install the require packages
+      ansible.builtin.yum:
+        name:
+          - httpd
+          - firewalld
+          - mariadb-server
+          - php
+          - php-mysqlnd 
+        state: latest
+
+    - name: Ensure firewalld service is enabled and running
+      ansible.builtin.systemd:
+        state: started
+        name: firewalld
+        enabled: true
+
+    - name: Ensure httpd service is enabled and running
+      ansible.builtin.systemd:
+        state: started
+        name: httpd
+        enabled: true
+
+    - name: Allow http service in the firewall
+      ansible.posix.firewalld:
+        service: http
+        permanent: yes
+        immediate: yes
+        state: enabled
+
+    - name: Ensure mariadb service is enabled and running
+      ansible.builtin.systemd:
+        state: started
+        name: mariadb
+        enabled: true
+
+    - name: Generate web content for testing
+      ansible.builtin.copy:
+        src: index.php
+        dest: /var/www/html/index.php
+
+- name: test access to the webserver
+  hosts: controlnode
+
+  tasks:
+    - name: Ensure that remote node is accessible
+      ansible.builtin.uri:
+        url: http://node2
+        return_content: true
+  
+      
+      
+      
+      
+      
+

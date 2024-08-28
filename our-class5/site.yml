@@ -1,0 +1,23 @@
+---
+- name: Install and start Apache HTTPD
+  hosts: web 
+  become: yes
+
+  tasks:  
+    - name: The httpd package is present
+      ansible.builtin.dnf:
+        name: httpd
+        state: present
+
+    - name: The correct index.html file is present
+      ansible.builtin.copy:
+        src: files/index.html
+        dest: /var/www/html/index.html
+
+    - name: httpd is started and enabled
+      ansible.builtin.service:
+        name: httpd
+        state: started
+        enabled: yes
+      
+

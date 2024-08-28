@@ -1,0 +1,21 @@
+---
+- name: Install packages
+  hosts: test, webservers
+  become: yes
+  tasks:
+
+    - name: Install php and mariadb packages
+      ansible.builtin.dnf:
+        name: 
+          - php
+          - mariadb
+        state: latest
+
+    - name: Install Development tools
+      ansible.builtin.dnf:
+        name: "{{ item }}"
+        state: latest      
+      loop:
+        - "@Development tools"
+        - "*"
+      when: inventory_hostname in groups['test']

@@ -1,0 +1,10 @@
+[webservers]
+node3
+node4
+
+[database]
+node1
+node3
+
+[proxy]
+node1

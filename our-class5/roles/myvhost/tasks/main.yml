@@ -1,0 +1,39 @@
+---
+# tasks file for myvhost
+
+- name: Ensure httpd is installed
+  ansible.builtin.dnf:
+    name: httpd
+    state: latest
+
+- name: Ensure httpd is started and enabled
+  ansible.builtin.service:
+    name: httpd
+    state: started
+    enabled: true
+
+- name: Create the vhost file
+  ansible.builtin.template:
+    src: vhost.conf.j2
+    dest: /etc/httpd/conf.d/vhost.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - restart httpd
+
+- name: Create the /var/www/vhosts/{{ ansible_hostname }} directory
+  ansible.builtin.file:
+    path: /var/www/vhosts/{{ ansible_hostname }}
+    state: directory
+    mode: '0755'
+
+- name: Index.html content is installed
+  ansible.builtin.copy:
+    src: index.html
+    dest: /var/www/vhosts/{{ ansible_hostname }}
+
+
+  
+
+

@@ -1,0 +1,26 @@
+---
+- name: Replace any existing content of /etc/motd with text.
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Add content to /etc/motd for Internetweb host group
+      ansible.builtin.copy:
+        dest: /etc/motd
+        content: "Welcome to Internetweb server\n"
+      when: inventory_hostname in groups['internetweb']
+
+    - name: Add content to /etc/motd for Intranetweb host group
+      ansible.builtin.copy:
+        dest: /etc/motd
+        content: "Welcome to Intranetweb server\n"
+      when: inventory_hostname in groups['intranetweb']
+
+    - name: Add content to /etc/motd for ungrouped host group
+      ansible.builtin.copy:
+        dest: /etc/motd
+        content: "Welcome to ungrouped server\n"
+      when: inventory_hostname in groups['ungrouped']
+     
+     
+

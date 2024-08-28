@@ -1,0 +1,6 @@
+---
+- name: Install and configure the apache httpd
+  hosts: webservers
+  become: true
+  roles:
+    - sample-apache

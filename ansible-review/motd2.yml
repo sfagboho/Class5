@@ -1,0 +1,41 @@
+---
+- name: Configure motd.j2 into /etc/motd
+  hosts: node2
+  become: true
+
+  tasks:
+    - name: Copy motd.j2 to /etc/motd
+      ansible.builtin.template:
+        src: motd.j2
+        dest: /etc/motd
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Check if motd exsit
+      ansible.builtin.stat:
+        path: /etc/motd
+      register: motd_result
+
+    - name: Diplay the info registered
+      ansible.builtin.debug:
+        var: motd_result
+    
+    - name:  copy files/issue into /etc/
+      ansible.builtin.copy:
+        src: files/issue
+        dest: /etc/issue
+        owner: root
+        group: root
+        mode: '0644'
+   
+    - name: create a symbolic link of /etc/issue
+      ansible.builtin.file:
+        src: /etc/issue
+        dest: /etc/issue.net
+        owner: root
+        group: root
+        state: link
+        mode: '0644'
+        force: yes  
+      

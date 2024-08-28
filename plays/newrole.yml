@@ -1,0 +1,7 @@
+---
+- name: configure the apache httpd
+  hosts: webservers
+  become: true
+
+  roles:
+    - apache

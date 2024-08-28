@@ -1,0 +1,17 @@
+---
+- name: Create user accounts in all managed nodes
+  hosts: all
+  gather_facts: true
+  become: true
+  vars_files:
+    - secret.yml
+
+  tasks: 
+    - name: Creating user from secret.yml
+      ansible.builtin.user:
+        name: "{{ username }}"
+        password: "{{ passhash }}"
+        state: present
+    
+
+    

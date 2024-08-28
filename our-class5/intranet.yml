@@ -1,0 +1,53 @@
+---
+- name: Enable intranet services
+  hosts: node1
+  become: true
+
+  tasks:
+    - name: latest version of httpd and firewalld installed
+      ansible.builtin.dnf:
+        name: 
+          - httpd
+          - firewalld
+        state: latest
+
+    - name: Add content to /var/www/html/index.html
+      ansible.builtin.lineinfile:
+        path: /var/www/html/index.html
+        line: "Welcome to the example.com intranet!"
+        create: yes
+
+    - name: Firewalld is enabled and running
+      ansible.builtin.service:
+        name: firewalld
+        state: started
+        enabled: yes
+
+    - name: Firewalld permits access to httpd service
+      ansible.posix.firewalld:
+        service: http
+        permanent: yes
+        state: enabled
+        immediate: yes
+
+    - name: httpd is enabled and running
+      ansible.builtin.service:
+        name: httpd
+        state: started
+        enabled: yes
+      
+- name: Test intranet web server
+  hosts: controlnode
+  become: no  
+
+  tasks:  
+    - name: connect to intranet web server
+      ansible.builtin.uri:
+        url: http://node1
+        return_content: true
+        status_code: 200
+   
+      
+      
+
+  

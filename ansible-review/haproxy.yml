@@ -1,0 +1,16 @@
+---
+- name: Configure the haproxy for apache
+  hosts: proxy
+  become: true
+  vars:
+    haproxy_backend_balance_method: 'roundrobin'
+
+    haproxy_backend_servers:
+      - name: node3
+        address: 192.168.1.154:80
+      - name: node4
+        address: 192.168.1.155:80
+
+  roles:
+    - haproxy     
+

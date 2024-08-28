@@ -1,0 +1,59 @@
+---
+- name: Configure the LVM
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Partition the disk
+      community.general.parted:
+        device: /dev/sdb
+        number: 1
+        state: present
+      ignore_errors: true
+
+    - name: Create the volume group research
+      block:
+        - name: Create research vg when /dev/sdb1 exist 
+          community.general.lvg:
+            vg: research
+            pvs: /dev/sdb1
+      rescue:
+        - name: Display a fail message when /dev/sdb1 does not exist
+          ansible.builtin.debug:
+            msg: "research vg does not exist"
+
+    - name: Create the logical volume
+      block:
+        - name: Create lv if research exist and has enough space
+          community.general.lvol:
+            vg: research
+            lv: mylv
+            size: 1500
+      rescue:
+        - name: Display a fail message when the space is not enough
+          ansible.builtin.debug:
+            msg: "Could not create logical volume of that size"
+
+        - name: Create lv of 800MiB instead
+          community.general.lvol:
+            vg: research
+            lv: mylv
+            size: 800
+
+    - name: Format the filesystem
+      community.general.filesystem:
+        dev: /dev/research/mylv
+        fstype: ext4
+     
+    - name: Mount the file system
+      ansible.posix.mount:
+        path: /data
+        src: /dev/research/mylv
+        fstype: ext4
+        state: mounted
+      when: inventory_hostname in groups['proxy']    
+
+                  
+      
+
+

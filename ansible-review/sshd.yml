@@ -1,0 +1,11 @@
+---
+- name: Configure sshd configuration file
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Modify sshd_config file
+      ansible.builtin.copy:
+        src: sshd_config
+        dest: /etc/ssh/sshd_config
+

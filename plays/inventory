@@ -1,0 +1,17 @@
+
+
+[test]
+ansible-control.hl.local 
+
+[proxy]
+ansible1.hl.local
+
+[webservers]
+ansible[2:3].hl.local
+
+[database]
+ansible4.hl.local
+
+[prod:children]
+webservers
+database

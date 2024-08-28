@@ -1,0 +1,22 @@
+---
+- name: Install and configure web service
+  hosts: no*
+  gather_facts: no
+  become: yes
+
+  tasks:
+    - name: Test the host patterns
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }}"
+
+    - name: Install, start and enable the httpd web
+      ansible.builtin.import_tasks: tasks/web_tasks.yml      
+
+    - name: Install, start and enable the firewalld
+      ansible.builtin.import_tasks: tasks/firewall_tasks.yml    
+
+  handlers:
+    - name: restart httpd
+      ansible.builtin.service:
+        name: httpd
+        state: restarted        

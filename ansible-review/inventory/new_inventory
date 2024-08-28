@@ -1,0 +1,13 @@
+controlnode
+node1
+
+[internetweb]
+node2
+
+[intranetweb]
+node3
+node4
+
+[web:children]
+internetweb
+intranetweb

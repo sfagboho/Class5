@@ -1,0 +1,13 @@
+---
+- src: https://github.com/linux-system-roles/timesync
+  name: timesync
+
+- src: https://github.com/linux-system-roles/selinux
+  name: selinux
+
+
+- src: geerlingguy.haproxy 
+  name: balancer
+
+- src: davidalger.php_fpm     
+  name: phpinfo

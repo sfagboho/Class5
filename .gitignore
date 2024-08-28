@@ -1,0 +1,8 @@
+ansible-review/secret.yml
+ansible-review/*log
+plays/*log
+our-class5/*log
+ansible-review/*.tar.gz
+ansible-review/collections
+our-class5/collections
+plays/collections

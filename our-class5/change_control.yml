@@ -1,0 +1,13 @@
+---
+- name: explores how to control the condition
+  hosts: node1
+
+  tasks:
+    - name: Check local time
+      ansible.builtin.command: date
+      register: date_result
+      changed_when: false
+
+    - name: Print local time
+      ansible.builtin.debug:
+        var: date_result.stdout

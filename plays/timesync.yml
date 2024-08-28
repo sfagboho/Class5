@@ -1,0 +1,11 @@
+---
+- name: Configure the timesync 
+  hosts: all
+  become: true
+  vars:
+    timesync_ntp_servers:
+      - hostname: rhel.server.ntp.org 
+        iburst: true
+ 
+  roles:
+    - timesync

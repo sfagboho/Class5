@@ -1,0 +1,19 @@
+---
+- name: Search for certificates excluding NFS file systems
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: Get mounted file systems
+      command: mount
+      register: mount_output
+
+    - name: Set fact for NFS mounts
+      set_fact:
+        nfs_mounts: "{{ mount_output.stdout_lines | select('search', '^.*nfs.*') | list }}"
+
+    - name: Find certificate files excluding NFS mounts
+      find:
+        paths: /
+        patterns: "*.crt,*.pem,*.key"
+        recurse: yes
+        excludes: "{{ nfs_mounts }}"

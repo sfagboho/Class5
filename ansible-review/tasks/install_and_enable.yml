@@ -1,0 +1,10 @@
+- name: Install {{ require_service }}
+  ansible.builtin.dnf:
+    name: "{{ require_service }}"
+    state: latest
+
+- name: Enable and start {{ require_service }}
+  ansible.builtin.service:
+    name: "{{ require_service }}"
+    enabled: true
+    state: started

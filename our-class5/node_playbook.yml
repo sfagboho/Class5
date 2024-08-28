@@ -1,0 +1,8 @@
+---
+- name: Resolve host patterns
+  hosts: ungrouped
+  gather_facts: false
+  tasks:
+    - name: Display managed host name
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }}"
