@@ -9,16 +9,22 @@
         state: present
         key: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-9
 
-    - name: Create a custom yum repository file
+    - name: Create a custom yum repository file for BaseOS 
+      ansible.builtin.yum_r epository:
+        name: Exam_RHEL for BaseOS 
+        description: EX294 software for BaseOS 
+        baseurl: https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+        gpgcheck: yes
+        enabled: no
+
+  - name: Create a custom yum repository file for AppStream 
       ansible.builtin.yum_repository:
-        name: Exam_RHEL
+        name: Exam_RHEL for AppStream 
         description: EX294 software
         baseurl: https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
         gpgcheck: yes
         enabled: no
 
-    - name: yum-clean-metadata
-      ansible.builtin.command: yum clean metadata
-      changed_when: false
+
       
      
