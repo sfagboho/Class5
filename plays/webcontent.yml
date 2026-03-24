@@ -8,7 +8,6 @@
       ansible.builtin.group:
         name: webdev
         state: present
-        
 
     - name: Create the webdev directory with permission
       ansible.builtin.file:
@@ -19,7 +18,13 @@
         state: directory
         setype: httpd_sys_content_t
 
-    - name: Create the symlink 
+    - name: Create the file /webdev/index.html
+      ansible.builtin.copy:
+        content: "development\n"
+        dest: /webdev/index.html
+        setype: httpd_sys_content_t
+
+    - name: Create the symlink
       ansible.builtin.file:
         src: /webdev
         dest: /var/www/html/webdev
@@ -29,21 +34,6 @@
         force: true
         setype: httpd_sys_content_t
 
-    - name: Create the file /webdev/index.html 
-      ansible.builtin.copy:
-        content: "development\n"
-        dest: /webdev/index.html
-
-    - name: Configure the fcontext for /webdev
-      community.general.sefcontext:
-        target: '/webdev(/.*)?'
-        setype: httpd_sys_content_t
-        state: present
-      notify: restorecon /webdev
-
-  handlers:
-    - name: restorecon /webdev
-      ansible.builtin.command: restorecon -FRv /webdev   
       
  
       
