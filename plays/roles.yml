@@ -1,0 +1,19 @@
+---
+- name: Run the phpinfo role on webservers
+  hosts: webservers
+  become: true
+  roles:
+    - phpinfo
+
+- name: Run the balancer role on proxy
+  hosts: proxy
+  become: true
+  vars:
+    haproxy_backend_servers:
+      - name: node2
+        address: 172.31.110.24:80
+      - name: node3
+        address: 172.31.96.135:80
+
+  roles:
+    - balancer
