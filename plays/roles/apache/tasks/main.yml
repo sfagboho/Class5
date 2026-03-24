@@ -3,7 +3,9 @@
 
 - name: httpd is installed
   ansible.builtin.dnf:
-    name: httpd
+    name:
+      - httpd
+      - firewalld
     state: latest
 
 - name: start and enable the httpd and firewalld
@@ -21,9 +23,10 @@
     permanent: yes
     state: enabled
     immediate: yes
-  
+
 - name: Create the file /var/www/html/index.html
   ansible.builtin.template:
     src: index.html.j2
     dest: /var/www/html/index.html
+
 
