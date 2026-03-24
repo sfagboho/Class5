@@ -4,23 +4,11 @@
   become: true
 
   tasks:
-    - name: Partition the disk
-      community.general.parted:
-        device: /dev/sdb
-        number: 1
-        state: present
-      ignore_errors: true
-
-    - name: Create the volume group research
-      block:
-        - name: Create research vg when /dev/sdb1 exist 
-          community.general.lvg:
-            vg: research
-            pvs: /dev/sdb1
-      rescue:
-        - name: Display a fail message when /dev/sdb1 does not exist
-          ansible.builtin.debug:
-            msg: "research vg does not exist"
+   
+    - name: Display a fail message when research does not exist
+      ansible.builtin.debug:
+        msg: "research vg does not exist"
+      when: ansible_lvm.vgs.research is not defined
 
     - name: Create the logical volume
       block:
